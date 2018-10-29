@@ -9,7 +9,7 @@ using StockExchangeApp.API.Data;
 namespace StockExchange.API.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20181028205640_Initial")]
+    [Migration("20181029090700_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -43,7 +43,9 @@ namespace StockExchange.API.Migrations
 
                     b.Property<string>("LastName");
 
-                    b.Property<byte[]>("Password");
+                    b.Property<byte[]>("PasswordHash");
+
+                    b.Property<byte[]>("PasswordSalt");
 
                     b.Property<string>("Username");
 

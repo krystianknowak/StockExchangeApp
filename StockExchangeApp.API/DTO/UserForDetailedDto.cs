@@ -1,12 +1,11 @@
 using System.Collections.Generic;
+using StockExchangeApp.API.Models;
 
-namespace StockExchangeApp.API.Models
+namespace StockExchangeApp.API.DTO
 {
-    public class User
+    public class UserForDetailedDto
     {
         public int Id { get; set; }
-        public byte[] PasswordHash { get; set; } 
-        public byte[] PasswordSalt { get; set; }
         public string Username { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

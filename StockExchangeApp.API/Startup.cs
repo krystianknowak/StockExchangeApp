@@ -39,7 +39,8 @@ namespace StockExchange.API
             });
             services.AddCors();
 
-            services.AddAutoMapper();
+            // services.AddAutoMapper();
+            services.AddScoped<IAuthRepository, AuthRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
