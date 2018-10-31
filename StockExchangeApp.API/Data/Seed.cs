@@ -18,7 +18,49 @@ namespace StockExchangeApp.API.Data
             if(stockExchnage != null)
                 return;
             
+            byte[] passwordHash, passwordSalt;        
+            Extensions.CreatePasswordHash(Extensions.STOCK_EXCHANGE, out passwordHash, out passwordSalt);    
             stockExchnage = new User();
+            stockExchnage.Username = Extensions.STOCK_EXCHANGE;
+            stockExchnage.PasswordHash = passwordHash;
+            stockExchnage.PasswordSalt = passwordSalt;
+            stockExchnage.FirstName = Extensions.STOCK_EXCHANGE;
+            stockExchnage.LastName = Extensions.STOCK_EXCHANGE;
+            stockExchnage.AvailableMoney = 0;
+            stockExchnage.Stocks.Add(
+                new UserStocks(){
+                    CompanyCode = "FP",
+                    OwnedUnits = 100000000
+                });
+            stockExchnage.Stocks.Add(
+                new UserStocks(){
+                    CompanyCode = "FPL",
+                    OwnedUnits = 100000000
+                });
+            stockExchnage.Stocks.Add(
+                new UserStocks(){
+                    CompanyCode = "PGB",
+                    OwnedUnits = 100000000
+                });
+            stockExchnage.Stocks.Add(
+                new UserStocks(){
+                    CompanyCode = "FPC",
+                    OwnedUnits = 100000000
+                });
+            stockExchnage.Stocks.Add(
+                new UserStocks(){
+                    CompanyCode = "FPA",
+                    OwnedUnits = 100000000
+                });
+            stockExchnage.Stocks.Add(
+                new UserStocks(){
+                    CompanyCode = "DL24",
+                    OwnedUnits = 100000000
+                });
+
+            _context.Users.AddAsync(stockExchnage);
+            _context.UserStocks.AddRangeAsync(stockExchnage.Stocks);
+            _context.SaveChangesAsync();
         }
 
     }

@@ -1,3 +1,5 @@
+import { StockService } from './stock.service';
+import { Stocks } from './../_interfaces/stocks';
 import { Injectable } from '@angular/core';
 declare let alertify: any;
 
@@ -5,14 +7,14 @@ declare let alertify: any;
   providedIn: 'root'
 })
 export class AlertifyService {
-
-  constructor() { }
+  constructor(private stockService: StockService) {}
 
   confirm(message: string, okCallback: () => any) {
     alertify.confirm(message, function(e) {
       if (e) {
         okCallback();
-      } else {}
+      } else {
+      }
     });
   }
 
@@ -32,4 +34,18 @@ export class AlertifyService {
     alertify.message(message);
   }
 
+  prompt(companyCode: string, action: string) {
+    alertify.prompt('Specify quantity of units', '1',
+      (evt, value) => {
+        if (isNaN(value)) {
+          return alertify.error('Sending value must be a number');
+        }
+        this.stockService.buyStock(companyCode, value);
+        // doStock(companyCode, value);
+        // alertify.success(value);
+      },
+      (evt, value) => {
+      }
+    );
+  }
 }

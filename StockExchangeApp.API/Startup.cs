@@ -43,6 +43,7 @@ namespace StockExchange.API
             services.AddCors();
 
             services.AddAutoMapper();
+            services.AddTransient<Seed>();
             services.AddScoped<IAuthRepository, AuthRepository>();
             services.AddScoped<IUsersRepository, UsersRepository>();
             services.AddScoped<IUserStocksRepository, UsersStockRepository>();
@@ -60,7 +61,7 @@ namespace StockExchange.API
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, Seed seeder)
         {
             if (env.IsDevelopment())
             {
@@ -83,6 +84,8 @@ namespace StockExchange.API
 
             // app.UseHttpsRedirection();
 
+            seeder.SeedStockExchnage();
+            
             app.UseCors(c => c.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseMvc();

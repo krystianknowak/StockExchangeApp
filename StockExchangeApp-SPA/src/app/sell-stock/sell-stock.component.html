@@ -1,3 +1,30 @@
-<p>
-  sell-stock works!
-</p>
+<div class="card border-dark mb-3">
+  <div class="card-header">
+    <h3>My wallet</h3>
+  </div>
+  <div class="card-body">
+      <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Company</th>
+              <th scope="col">Unit price</th>
+              <th scope="col">Amount</th>
+              <th scope="col">Value</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of stocks" >
+              <td>{{item.companyCode}}</td>
+              <td>{{item.value}}</td>
+              <td>{{item.ownedUnits}}</td>
+              <td>{{item.value * item.value}}</td>
+              <td> <button class="btn btn-primary" style="width:100px;">Sell</button> </td>
+            </tr>
+          </tbody>
+        </table>
+        <hr>
+        <h3>Available money: {{money}}</h3>
+
+  </div>
+</div>

@@ -18,6 +18,8 @@ import { BuyStockComponent } from './buy-stock/buy-stock.component';
 import { SellStockComponent } from './sell-stock/sell-stock.component';
 import { HomeComponent } from './home/home.component';
 import { FpService } from './_services/fp.service';
+import { UsersService } from './_services/users.service';
+import { StockService } from './_services/stock.service';
 
 @NgModule({
    declarations: [
@@ -41,7 +43,9 @@ import { FpService } from './_services/fp.service';
       ErrorInterceptorProvider,
       AlertifyService,
       AuthGuard,
-      FpService
+      FpService,
+      UsersService,
+      StockService
    ],
    bootstrap: [
       AppComponent

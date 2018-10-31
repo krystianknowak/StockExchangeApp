@@ -1,3 +1,4 @@
+import { FpResponse } from './../_interfaces/FpResponse';
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -13,7 +14,7 @@ constructor(private http: HttpClient) { }
   getStocksInformations() {
     const myHeaders = new HttpHeaders();
     myHeaders.append('Content-Type', 'application/json');
-    return this.http.get(this.fpUrl, {headers: myHeaders });
+    return this.http.get<FpResponse>(this.fpUrl, {headers: myHeaders });
   }
 
 }

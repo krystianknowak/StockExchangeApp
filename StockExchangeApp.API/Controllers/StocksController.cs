@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using StockExchangeApp.API.Data;
 using StockExchangeApp.API.Models;
 using StockExchangeApp.API.Helpers;
+using StockExchangeApp.API.DTO;
 
 namespace StockExchangeApp.API.Controllers
 {
@@ -24,7 +25,7 @@ namespace StockExchangeApp.API.Controllers
         }
 
 
-        [HttpPost("[action]")]
+        [HttpPost("buystock")]
         public async Task<IActionResult> BuyStock(UserStocks stock)
         {
             var id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);   
@@ -44,7 +45,7 @@ namespace StockExchangeApp.API.Controllers
             return Ok(true);  
         }
 
-        [HttpPost("[action]")]
+        [HttpPost("sellstock")]
         public async Task<IActionResult> SellStock(UserStocks stock)
         {
             var id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);

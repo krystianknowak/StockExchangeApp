@@ -54,7 +54,6 @@ export class RegisterComponent implements OnInit {
   getStocksInformations() {
     this.fp.getStocksInformations().subscribe(response => {
       this.fpResponse = response;
-      console.log(response);
     }, error => {
       this.alertify.error(error);
     });
@@ -67,7 +66,6 @@ export class RegisterComponent implements OnInit {
     this.newUser.lastname = this.model.lastname;
     this.newUser.availablemoney = this.model.availablemoney;
     this.newUser.stocks = this.stocks;
-    console.log(this.newUser);
     this.authService.register(this.newUser).subscribe(() => {
       this.alertify.success('registration succesful');
     }, error => {

@@ -1,3 +1,5 @@
+import { AlertifyService } from './../_services/alertify.service';
+import { FpService } from './../_services/fp.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -5,6 +7,7 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './panel.component.html',
   styleUrls: ['./panel.component.css']
 })
+
 export class PanelComponent implements OnInit {
 
   constructor() { }

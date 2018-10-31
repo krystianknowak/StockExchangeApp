@@ -1,3 +1,24 @@
-<p>
-  buy-stock works!
-</p>
+<div class="card border-dark mb-3">
+  <div class="card-header">
+    <h3>Stock prices</h3>
+  </div>
+  <div class="card-body">
+    <table class="table">
+      <thead>
+        <tr>
+          <th scope="col">Company</th>
+          <th scope="col">Value</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of stocks" >
+          <td>{{item.companyCode}}</td>
+          <td>{{item.value}}</td>
+          <td> <button class="btn btn-primary" style="width:100px;" (click)="buyStock(item.companyCode)">Buy</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
