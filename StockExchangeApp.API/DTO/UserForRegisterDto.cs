@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using StockExchangeApp.API.Models;
 
 namespace StockExchangeApp.API.DTO
 {
@@ -13,5 +15,6 @@ namespace StockExchangeApp.API.DTO
         public string LastName { get; set; }
         [Required]
         public decimal AvailableMoney { get; set; }
+        public ICollection<UserForDetailedStocksDto> Stocks { get; set; }
     }
 }

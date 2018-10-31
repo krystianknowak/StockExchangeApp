@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using AutoMapper;
 using StockExchangeApp.API.DTO;
 using StockExchangeApp.API.Models;
@@ -9,6 +10,7 @@ namespace StockExchangeApp.API.Helpers
         public AutoMapperProfiles()
         {
             CreateMap<User, UserForDetailedDto>();
+            CreateMap<UserStocks, UserForDetailedStocksDto>();
         }
     }
 }

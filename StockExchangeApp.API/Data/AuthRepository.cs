@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -66,6 +68,35 @@ public class AuthRepository : IAuthRepository
                 return true;
 
             return false;
+        }
+
+        public async Task<User> RegisterWithStocks(User user, string password)
+        {
+            byte[] passwordHash, passwordSalt;
+            CreatePasswordHash(password, out passwordHash, out passwordSalt); 
+
+            var stockExchnage = await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == "stockexchange");
+            var stockExchnageStocks = await _context.UserStocks.Where(us => us.UserId == stockExchnage.Id).ToListAsync();
+            foreach(var s in user.Stocks)
+            {
+                var stockByCompanyCode = stockExchnageStocks.FirstOrDefault(x => x.CompanyCode == s.CompanyCode);
+                if(s.OwnedUnits > stockByCompanyCode.OwnedUnits){
+                    throw new Exception("Stock exchnage have too few units");
+                }
+                else{
+                    var changedStock = await _context.UserStocks.FirstOrDefaultAsync(us => us.UserId == stockExchnage.Id && us.CompanyCode == s.CompanyCode);
+                    changedStock.OwnedUnits -= s.OwnedUnits;
+                }
+            }
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            await _context.Users.AddAsync(user);
+            await _context.UserStocks.AddRangeAsync(user.Stocks);
+            
+            await _context.SaveChangesAsync();
+            return user;
         }
     }
 }

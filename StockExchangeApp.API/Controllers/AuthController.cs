@@ -1,11 +1,14 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Net.Http;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using StockExchangeApp.API.Data;
 using StockExchangeApp.API.DTO;
 using StockExchangeApp.API.Models;
@@ -46,11 +49,60 @@ namespace StockExchangeApp.API.Controllers
             return StatusCode(201);
         }
 
+        [HttpPost("withstocks")]
+        public async Task<IActionResult> RegisterWithStocks(UserForRegisterDto userForRegisterDto)
+        {
+            userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
+            if(await _repo.UserExists(userForRegisterDto.Username))
+                return BadRequest("Username alredy exists");
+
+            FpResponse companyUnitValues = await GetUnitsValue();
+            List<UserStocks> stockToAdd = new List<UserStocks>();
+            foreach(var stock in userForRegisterDto.Stocks)
+            {
+                var companyUnitValue = companyUnitValues.items.Find(x => x.Code == stock.CompanyCode);
+                if(companyUnitValue == null || !(stock.OwnedUnits % companyUnitValue.Unit == 0))
+                    return BadRequest(String.Format("Quantity of {0} must be multiple of {1}", stock.CompanyCode, companyUnitValue.Unit));
+                
+                stockToAdd.Add(new UserStocks(){
+                    CompanyCode = stock.CompanyCode,
+                    OwnedUnits = stock.OwnedUnits
+                });
+            }
+
+            var userToCreate = new User
+            {
+                Username = userForRegisterDto.Username,
+                FirstName = userForRegisterDto.FirstName,
+                LastName = userForRegisterDto.LastName,
+                AvailableMoney = RoundDown(userForRegisterDto.AvailableMoney, 2),
+                Stocks = stockToAdd
+            };
+            
+            var createdUser = await _repo.RegisterWithStocks(userToCreate, userForRegisterDto.Password);
+
+            return StatusCode(201);
+        }
+
+        private decimal RoundDown(decimal i, double decimalPlaces)
+        {
+            var power = Convert.ToDecimal(Math.Pow(10, decimalPlaces));
+            return Math.Floor(i * power) / power;
+        }
+
+        private async Task<FpResponse> GetUnitsValue()
+        {
+            HttpClient client = new HttpClient();
+            var responseString = await client.GetStringAsync("http://webtask.future-processing.com:8068/stocks");
+
+            return JsonConvert.DeserializeObject<FpResponse>(responseString);
+        }
+
         [HttpPost("[action]")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
             var userFromRepo = await _repo.Login(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
-            if(userFromRepo == null)
+            if(userFromRepo == null || userFromRepo.Username.ToLower() == "stockexchange")
                 return Unauthorized();
 
             var claims = new[]

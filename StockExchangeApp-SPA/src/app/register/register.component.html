@@ -1,0 +1,85 @@
+<div class="contrainer mt-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-6">
+
+        <form #registerForm="ngForm" (ngSubmit)="register()">
+          <h2 class="text-center text-primary">Sign Up</h2>
+          <hr>
+
+          <div class="form-group">
+            <div class="row">
+              <div class="col">
+                <input type="text" class="form-control" required name="username" [(ngModel)]="model.username"
+                  placeholder="Username">
+              </div>
+              <div class="col">
+                <input type="password" class="form-control" required name="password" [(ngModel)]="model.password"
+                  placeholder="Password">
+              </div>
+            </div>
+          </div>
+
+          <div class="form-group mt-4">
+            <div class="row">
+              <div class="col">
+                <input type="text" class="form-control" required name="firstName" [(ngModel)]="model.firstname"
+                  placeholder="First name">
+              </div>
+              <div class="col">
+                <input type="text" class="form-control" required name="lastName" [(ngModel)]="model.lastname"
+                  placeholder="Last name">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <div class="row justify-content-center">
+              <div class="col-6">
+                <input type="number" class="form-control" required name="availableMoney" [(ngModel)]="model.availablemoney"
+                  placeholder="Available money">
+              </div>
+            </div>
+          </div>
+          <div class="row">Add stocks:</div>
+          <div class="form-group mt-4">
+            <div class="row justify-content-center">
+              <div class="col-4">
+                <select class="form-control" id="favouriteValue" #companyCode (change)="findMultiple($event.target.value)">
+                  <option *ngFor="let value of fpResponse.items" [value]="value.code">{{value.code}}</option>
+                </select>
+              </div>
+              <div class="col-5">
+                <input type="number" min="1" value="0" class="form-control" required #stockQuantity name="unitsQuantity">
+              </div>
+              <div class="col-2">
+                <button class="btn btn-primary" type="button" (click)="addStock(companyCode.value, stockQuantity.value)"><i
+                    class="fa fa-plus"></i></button>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            * Buying units of this company must be multiple of {{multipleOf}}
+          </div>
+
+          <div class="" *ngFor="let stock of stocks">
+            <hr>
+            <div class="row">
+              <div class="col">{{stock.companycode}}</div>
+              <div class="col">{{stock.ownedunits}} units</div>
+              <div class="col"><button type="button" class="btn btn-danger" (click)="deleteStock(stock.companycode)"><i
+                    class="fa fa-minus"></i></button></div>
+            </div>
+          </div>
+
+          <br>
+          <div class="form-group text-center">
+            <button class="btn btn-success mr-2" type="submit">Register</button>
+            <button class="btn btn-default" type="button" [routerLink]="['/home']">Cancel</button>
+          </div>
+
+        </form>
+
+      </div>
+    </div>
+  </div>
+</div>

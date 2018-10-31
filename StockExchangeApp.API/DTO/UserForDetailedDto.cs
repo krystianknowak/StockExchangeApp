@@ -10,6 +10,6 @@ namespace StockExchangeApp.API.DTO
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public decimal AvailableMoney { get; set; }
-        public ICollection<UserStocks> Stocks { get; set; }
+        public ICollection<UserForDetailedStocksDto> Stocks { get; set; }
     }
 }
