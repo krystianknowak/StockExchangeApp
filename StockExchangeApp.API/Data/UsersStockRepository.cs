@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using StockExchangeApp.API.Models;
+using StockExchangeApp.API.Helpers;
 
 namespace StockExchangeApp.API.Data
 {
@@ -20,7 +21,7 @@ namespace StockExchangeApp.API.Data
         {
             var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == stock.UserId);
             
-            var stockExchnage = await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == "stockexchange");
+            var stockExchnage = await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == Extensions.STOCK_EXCHANGE);
             var stockExchnageStocks = await _context.UserStocks.FirstOrDefaultAsync(us => us.UserId == stockExchnage.Id && us.CompanyCode == stock.CompanyCode);
             if(stockExchnageStocks.OwnedUnits < stock.OwnedUnits){
                 throw new Exception("Stock exchnage have too few units");
@@ -51,7 +52,7 @@ namespace StockExchangeApp.API.Data
             if(checkingStock == null)
                 throw new Exception("You do not have any units of this company");
 
-            var stockExchnage = await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == "stockexchange");
+            var stockExchnage = await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == Extensions.STOCK_EXCHANGE);
             var stockExchnageStocks = await _context.UserStocks.FirstOrDefaultAsync(us => us.UserId == stockExchnage.Id && us.CompanyCode == stock.CompanyCode);
             stockExchnageStocks.OwnedUnits += stock.OwnedUnits;
 

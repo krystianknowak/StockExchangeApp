@@ -1,5 +1,6 @@
 using System.Linq;
 using StockExchangeApp.API.Models;
+using StockExchangeApp.API.Helpers;
 
 namespace StockExchangeApp.API.Data
 {
@@ -13,7 +14,7 @@ namespace StockExchangeApp.API.Data
 
         public void SeedStockExchnage()
         {
-            User stockExchnage = _context.Users.FirstOrDefault(s => s.Username.ToLower() == "stockexchange");
+            User stockExchnage = _context.Users.FirstOrDefault(s => s.Username.ToLower() == Extensions.STOCK_EXCHANGE);
             if(stockExchnage != null)
                 return;
             

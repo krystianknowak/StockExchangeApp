@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using StockExchangeApp.API.Data;
 using StockExchangeApp.API.Models;
+using StockExchangeApp.API.Helpers;
 
 namespace StockExchangeApp.API.Controllers
 {
@@ -28,8 +29,8 @@ namespace StockExchangeApp.API.Controllers
         {
             var id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);   
             stock.UserId = id;
-            FpResponse unitsPrice = await GetUnitsValue();
-            decimal unitPrice = RoundUp(unitsPrice.items.Select(i => i.Price).FirstOrDefault(), 2);
+            FpResponse unitsPrice = await Extensions.GetUnitsValue();
+            decimal unitPrice = Extensions.RoundUp(unitsPrice.items.Select(i => i.Price).FirstOrDefault(), 2);
             var fpStockData = unitsPrice.items.FirstOrDefault(x => x.Code == stock.CompanyCode);
             if(fpStockData == null)
                 return BadRequest("There is no company with this name");
@@ -48,8 +49,8 @@ namespace StockExchangeApp.API.Controllers
         {
             var id = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
             stock.UserId = id;            
-            FpResponse unitsPrice = await GetUnitsValue();
-            decimal unitPrice = RoundDown(unitsPrice.items.Select(i => i.Price).FirstOrDefault(), 2);
+            FpResponse unitsPrice = await Extensions.GetUnitsValue();
+            decimal unitPrice = Extensions.RoundDown(unitsPrice.items.Select(i => i.Price).FirstOrDefault(), 2);
 
             var fpStockData = unitsPrice.items.FirstOrDefault(x => x.Code == stock.CompanyCode);
             if(fpStockData == null)
@@ -64,25 +65,5 @@ namespace StockExchangeApp.API.Controllers
             return Ok(true);  
         }
 
-
-        private async Task<FpResponse> GetUnitsValue()
-        {
-            HttpClient client = new HttpClient();
-            var responseString = await client.GetStringAsync("http://webtask.future-processing.com:8068/stocks");
-
-            return JsonConvert.DeserializeObject<FpResponse>(responseString);
-        }
-
-        private decimal RoundDown(decimal i, double decimalPlaces)
-        {
-            var power = Convert.ToDecimal(Math.Pow(10, decimalPlaces));
-            return Math.Floor(i * power) / power;
-        }
-
-        private decimal RoundUp(decimal i, double decimalPlaces)
-        {
-            var power = Convert.ToDecimal(Math.Pow(10, decimalPlaces));
-            return Math.Ceiling(i * power) / power;
-        }
     }
 }

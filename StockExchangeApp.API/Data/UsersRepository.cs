@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using StockExchangeApp.API.Models;
+using StockExchangeApp.API.Helpers;
 
 namespace StockExchangeApp.API.Data
 {
@@ -16,7 +17,7 @@ namespace StockExchangeApp.API.Data
 
         public async Task<User> GetStockExchnage()
         {
-            var stockExchnage = await _context.Users.Include(stocks => stocks.Stocks).FirstOrDefaultAsync(u => u.Username.ToLower() == "stockexchange");
+            var stockExchnage = await _context.Users.Include(stocks => stocks.Stocks).FirstOrDefaultAsync(u => u.Username.ToLower() == Extensions.STOCK_EXCHANGE);
 
             return stockExchnage;
         }

@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using StockExchangeApp.API.Data;
 using StockExchangeApp.API.DTO;
 using StockExchangeApp.API.Models;
+using StockExchangeApp.API.Helpers;
 
 namespace StockExchangeApp.API.Controllers
 {
@@ -56,7 +57,7 @@ namespace StockExchangeApp.API.Controllers
             if(await _repo.UserExists(userForRegisterDto.Username))
                 return BadRequest("Username alredy exists");
 
-            FpResponse companyUnitValues = await GetUnitsValue();
+            FpResponse companyUnitValues = await Extensions.GetUnitsValue();
             List<UserStocks> stockToAdd = new List<UserStocks>();
             foreach(var stock in userForRegisterDto.Stocks)
             {
@@ -75,7 +76,7 @@ namespace StockExchangeApp.API.Controllers
                 Username = userForRegisterDto.Username,
                 FirstName = userForRegisterDto.FirstName,
                 LastName = userForRegisterDto.LastName,
-                AvailableMoney = RoundDown(userForRegisterDto.AvailableMoney, 2),
+                AvailableMoney = Extensions.RoundDown(userForRegisterDto.AvailableMoney, 2),
                 Stocks = stockToAdd
             };
             
@@ -84,25 +85,11 @@ namespace StockExchangeApp.API.Controllers
             return StatusCode(201);
         }
 
-        private decimal RoundDown(decimal i, double decimalPlaces)
-        {
-            var power = Convert.ToDecimal(Math.Pow(10, decimalPlaces));
-            return Math.Floor(i * power) / power;
-        }
-
-        private async Task<FpResponse> GetUnitsValue()
-        {
-            HttpClient client = new HttpClient();
-            var responseString = await client.GetStringAsync("http://webtask.future-processing.com:8068/stocks");
-
-            return JsonConvert.DeserializeObject<FpResponse>(responseString);
-        }
-
         [HttpPost("[action]")]
         public async Task<IActionResult> Login(UserForLoginDto userForLoginDto)
         {
             var userFromRepo = await _repo.Login(userForLoginDto.Username.ToLower(), userForLoginDto.Password);
-            if(userFromRepo == null || userFromRepo.Username.ToLower() == "stockexchange")
+            if(userFromRepo == null || userFromRepo.Username.ToLower() == Extensions.STOCK_EXCHANGE)
                 return Unauthorized();
 
             var claims = new[]

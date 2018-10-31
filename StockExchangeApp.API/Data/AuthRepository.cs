@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using StockExchangeApp.API.Models;
+using StockExchangeApp.API.Helpers;
 
 namespace StockExchangeApp.API.Data
 {
@@ -44,22 +45,13 @@ public class AuthRepository : IAuthRepository
         public async Task<User> Register(User user, string password)
         {
             byte[] passwordHash, passwordSalt;
-            CreatePasswordHash(password, out passwordHash, out passwordSalt); 
+            Extensions.CreatePasswordHash(password, out passwordHash, out passwordSalt); 
 
             user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
             return user;
-        }
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using(var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
-            }
         }
 
         public async Task<bool> UserExists(string username)
@@ -73,9 +65,8 @@ public class AuthRepository : IAuthRepository
         public async Task<User> RegisterWithStocks(User user, string password)
         {
             byte[] passwordHash, passwordSalt;
-            CreatePasswordHash(password, out passwordHash, out passwordSalt); 
-
-            var stockExchnage = await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == "stockexchange");
+            Extensions.CreatePasswordHash(password, out passwordHash, out passwordSalt);
+            var stockExchnage = await _context.Users.FirstOrDefaultAsync(u => u.Username.ToLower() == Extensions.STOCK_EXCHANGE);
             var stockExchnageStocks = await _context.UserStocks.Where(us => us.UserId == stockExchnage.Id).ToListAsync();
             foreach(var s in user.Stocks)
             {
